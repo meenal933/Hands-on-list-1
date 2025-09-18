@@ -1,0 +1,9 @@
+Hello
+This is the file for successful exection of program_22.
+
+Parent is Writing
+CHild is writing
+Parent is Writing
+CHild is writing
+Parent is Writing
+Child is writing
