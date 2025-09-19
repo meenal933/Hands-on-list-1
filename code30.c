@@ -9,95 +9,50 @@ Date: August 26, 2025
  */
 
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
-int main()
-{
+int main() {
 	pid_t pid = fork();
-	if(pid == -1)
-	{
-		printf("Fork Failed");
-		return 1;
+
+    	if(pid > 0){
+        	exit(0);
+    	}
+
+    	// Child becomes daemon
+    	if(setsid() < 0){
+		exit(1);
 	}
+    	umask(0);
+    	chdir("/");
 
-	if(pid == 0)
-	{
-		 //Child process
-		 sleep(10); //give some time for parent process to exit
+	close(STDIN_FILENO);
+    	close(STDOUT_FILENO);
+    	close(STDERR_FILENO);
 
-		 printf("creating the new session with setsid()\n");
-		 pid_t newSes = setsid(); //Create a new session
-	         
-		 if(newSes == -1)
-		 {
-			 printf("Creating the new session Failed\n");
-			 return 1;
-		 }else
-		 {
-			 //Successful creation
-			 printf("A new session Created Successfully\n");
-		 }
-		 int changeDir = chdir("/"); //change the working directory to "/"
+    	// Targeted time
+    	int target_hour = 23;
+    	int target_min = 30;
 
-		 if(changeDir == -1)
-		 {
-			 //if chdir fails
-			 printf("Trying to change the directory failed\n");
-			 return 1;
-		 }
-		 else
-		 {
-			 printf("Changed the directory to '/' \n");
+    	while(1){
+        	time_t now = time(NULL);
+        	struct tm *lt = localtime(&now);
 
-			 while(1)
-			 {
-				 sleep(2); //sleep for 2 sec
-				printf("Process id of process is: %d\n", getpid()); // print process id
+       	 	if (lt->tm_hour == target_hour && lt->tm_min == target_min) {
+            		system("home/hp/myscript.sh");
+            		sleep(60);
+        	}
+        	sleep(30);
+    	}
 
-				printf("The Daemon process is running \n"); //indicates that the daemon is running
-			 }
-		 }
-	}
-          
-	else
-	{
-		//PARENT PROCESS
-		printf("Parent Process: This is going to exit\n");
-		exit(0);
-		//parent process exits leaving the child process running
-	}
+    return 0;
 }
 
-
-//OUTPUT
-//Parent process: This is going to exit
-
 /*
- 
- 
-creating the new session with setsid()
-A new session Created Successfully
-Changed the directory to '/' 
-Process id of process is: 6771
-The Daemon process is running 
-Process id of process is: 6771
-The Daemon process is running 
-Process id of process is: 6771
-The Daemon process is running 
-Process id of process is: 6771
-The Daemon process is running 
-Process id of process is: 6771
-The Daemon process is running 
-Process id of process is: 6771
-The Daemon process is running 
-Process id of process is: 6771
-The Daemon process is running 
-Process id of process is: 6771
-The Daemon process is running 
-..
-.
-.
-.
-
+cat /home/hp/myscript.log
+Hello, Script executed at Fri Sep 19 11:30:18 PM IST 2025
 */
