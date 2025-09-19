@@ -20,7 +20,10 @@ int main()
 	//max and min Priority for FIFO scheduling
 	
 	maxPr_fifo= sched_get_priority_max(SCHED_FIFO);
-	minPr_fifo = sched_get_priority_max(SCHED_FIFO);
+	minPr_fifo = sched_get_priority_min(SCHED_FIFO);
+
+	maxPr_RR= sched_get_priority_max(SCHED_RR);
+	minPr_RR = sched_get_priority_min(SCHED_RR);
 
 	  printf("for FIFO max priority= %d, min priority =%d\n", maxPr_fifo, minPr_fifo);
 	  printf("for RR max priority = %d, min Priority = %d\n", maxPr_RR, minPr_RR);
@@ -30,6 +33,6 @@ int main()
 
 
 //OUTPUT
-//for FIFO max priority= 99, min priority =99
-//for RR max priority = -1862790248, min Priority = 32767
+//for FIFO max priority= 99, min priority =1
+//for RR max priority = 99, min Priority = 1
 
